@@ -4,33 +4,34 @@ import { ProductCard } from './components/ui/ProductCard';
 import { CartDrawer } from './components/cart/CartDrawer';
 import { Checkout } from './pages/Checkout';
 import { Chatbot } from './components/ui/Chatbot';
+import { Suggestions } from './components/ui/Suggestions'; // Motor de IA
 import { products } from './data/products';
 import { useCart } from './context/CartContext';
-import { Cpu, Zap, ShieldCheck, Rocket, Users, Search, Filter } from 'lucide-react';
+import { Cpu, Rocket, Zap, ShieldCheck, Users, Search } from 'lucide-react';
 
 function App() {
   const { cart, addToCart, cartTotal, clearCart } = useCart();
   const [view, setView] = useState('inicio');
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // Estados para el Buscador Inteligente
+  // Estados para la Inteligencia del Sitio
   const [category, setCategory] = useState('Todos');
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Lógica de Filtros y Búsqueda combinada (Optimizado con useMemo)
+  // Lógica de Filtros y Búsqueda (Optimización para Auditoría de Rendimiento)
   const categories = useMemo(() => ['Todos', ...new Set(products.map(p => p.category))], []);
 
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
       const matchesCategory = category === 'Todos' || p.category === category;
       const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.category.toLowerCase().includes(searchTerm.toLowerCase());
+        p.description.toLowerCase().includes(searchTerm.toLowerCase());
       return matchesCategory && matchesSearch;
     });
   }, [category, searchTerm]);
 
   const handlePurchaseComplete = () => {
-    alert("¡Compra exitosa! Procesando envío para La Paz, Bolivia.");
+    alert("¡Compra exitosa! Pedido procesado para entrega en La Paz.");
     clearCart();
     setView('inicio');
   };
@@ -62,54 +63,66 @@ function App() {
                   ELECTRO<span className="text-blue-600 italic">.</span>LAB
                 </h1>
                 <p className="text-slate-400 text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-                  Componentes electrónicos de alta precisión para proyectos académicos y profesionales.
+                  Hardware de precisión y componentes electrónicos certificados. Diseñado para la comunidad de ingeniería en Bolivia.
                 </p>
                 <button
                   onClick={() => setView('catalogo')}
                   className="bg-blue-600 text-white px-10 py-5 rounded-2xl font-black hover:bg-blue-500 transition-all shadow-xl shadow-blue-500/20 active:scale-95"
                 >
-                  EXPLORAR CATÁLOGO
+                  EXPLORAR INVENTARIO
                 </button>
               </div>
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none" />
             </header>
 
             <section className="py-20 px-6 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm"><Zap className="text-blue-500 mb-4" /><h3 className="font-bold mb-2">Envío Rápido</h3><p className="text-slate-500 text-sm">Logística optimizada para La Paz.</p></div>
-              <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm"><ShieldCheck className="text-blue-500 mb-4" /><h3 className="font-bold mb-2">Garantía Real</h3><p className="text-slate-500 text-sm">Soporte técnico especializado.</p></div>
-              <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm"><Users className="text-blue-500 mb-4" /><h3 className="font-bold mb-2">Comunidad EMI</h3><p className="text-slate-500 text-sm">Descuentos especiales para estudiantes.</p></div>
+              <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                <Zap className="text-blue-500 mb-4" />
+                <h3 className="font-bold mb-2 uppercase tracking-tighter italic">Logística Local</h3>
+                <p className="text-slate-500 text-sm">Entregas inmediatas en toda la ciudad de La Paz.</p>
+              </div>
+              <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                <ShieldCheck className="text-blue-500 mb-4" />
+                <h3 className="font-bold mb-2 uppercase tracking-tighter italic">Calidad Técnica</h3>
+                <p className="text-slate-500 text-sm">Componentes testeados para proyectos de grado y tesis.</p>
+              </div>
+              <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                <Users className="text-blue-500 mb-4" />
+                <h3 className="font-bold mb-2 uppercase tracking-tighter italic">Alianza EMI</h3>
+                <p className="text-slate-500 text-sm">Soporte directo para estudiantes de Ingeniería de Sistemas.</p>
+              </div>
             </section>
           </>
         )}
 
-        {/* VISTA: CATÁLOGO CON BUSCADOR INTELIGENTE */}
+        {/* VISTA: CATÁLOGO INTELIGENTE */}
         {view === 'catalogo' && (
           <section className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
             <div className="mb-12 space-y-8">
               <div>
-                <h2 className="text-5xl font-black text-slate-900 tracking-tighter">INVENTARIO <span className="text-blue-600 underline">PRO</span></h2>
-                <p className="text-slate-400 mt-2">Encuentra exactamente lo que necesitas para tu hardware.</p>
+                <h2 className="text-5xl font-black text-slate-900 tracking-tighter">SISTEMA DE <span className="text-blue-600 underline text-6xl">COMPRAS</span></h2>
+                <p className="text-slate-400 mt-2 font-medium">Búsqueda y recomendaciones impulsadas por lógica de asociación.</p>
               </div>
 
-              {/* BARRA DE BÚSQUEDA INTELIGENTE */}
+              {/* BARRA DE BÚSQUEDA Y FILTROS */}
               <div className="flex flex-col md:flex-row gap-4 items-center">
-                <div className="relative flex-1 w-full">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                <div className="relative flex-1 w-full group">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={20} />
                   <input
                     type="text"
-                    placeholder="Buscar por nombre o descripción..."
-                    className="w-full pl-12 pr-4 py-4 bg-white rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none shadow-sm transition-all"
+                    placeholder="Buscar sensores, placas, herramientas..."
+                    className="w-full pl-12 pr-4 py-4 bg-white rounded-2xl border border-slate-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none shadow-sm transition-all font-medium"
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
-                <div className="flex gap-2 overflow-x-auto pb-2 w-full md:w-auto">
+                <div className="flex gap-2 overflow-x-auto pb-2 w-full md:w-auto scrollbar-hide">
                   {categories.map(cat => (
                     <button
                       key={cat}
                       onClick={() => setCategory(cat)}
-                      className={`px-6 py-2 rounded-xl font-bold text-xs uppercase whitespace-nowrap transition-all ${category === cat
+                      className={`px-6 py-2 rounded-xl font-bold text-[10px] uppercase tracking-widest whitespace-nowrap transition-all ${category === cat
                           ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
-                          : 'bg-white text-slate-400 border border-slate-200 hover:border-blue-400'
+                          : 'bg-white text-slate-400 border border-slate-200 hover:border-blue-400 hover:text-blue-600'
                         }`}
                     >
                       {cat}
@@ -119,20 +132,27 @@ function App() {
               </div>
             </div>
 
-            {/* Resultados de Búsqueda */}
-            {filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                {filteredProducts.map(p => (
-                  <ProductCard key={p.id} product={p} onAdd={addToCart} />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
-                <Search size={48} className="mx-auto text-slate-200 mb-4" />
-                <h3 className="text-xl font-bold text-slate-800">No encontramos resultados</h3>
-                <p className="text-slate-400">Prueba con términos más generales como "Arduino" o "Sensor".</p>
-              </div>
-            )}
+            {/* MOTOR DE RECOMENDACIONES (INTELIGENCIA ARTIFICIAL) */}
+            <Suggestions cart={cart} onAdd={addToCart} />
+
+            {/* GRID DE RESULTADOS */}
+            <div className="mt-12">
+              {filteredProducts.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                  {filteredProducts.map(p => (
+                    <ProductCard key={p.id} product={p} onAdd={addToCart} />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-24 bg-white rounded-[3rem] border-2 border-dashed border-slate-200">
+                  <div className="bg-slate-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Search size={32} className="text-slate-300" />
+                  </div>
+                  <h3 className="text-2xl font-black text-slate-800 tracking-tight">Sin coincidencias técnicas</h3>
+                  <p className="text-slate-400 max-w-xs mx-auto mt-2">Prueba ajustando los filtros o buscando términos más generales.</p>
+                </div>
+              )}
+            </div>
           </section>
         )}
 
@@ -147,23 +167,28 @@ function App() {
         )}
       </main>
 
-      <footer className="bg-white border-t border-slate-200 py-12 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2 text-slate-900 font-black tracking-tighter italic">
-            <Cpu size={20} className="text-blue-600" />
-            <span>ELECTRO.LAB</span>
+      <footer className="bg-white border-t border-slate-200 py-16 px-6 mt-10">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="flex flex-col items-center md:items-start gap-4">
+            <div className="flex items-center gap-2 text-slate-900 font-black tracking-tighter italic text-2xl">
+              <Cpu size={28} className="text-blue-600" />
+              <span>ELECTRO<span className="text-blue-600">.</span>LAB</span>
+            </div>
+            <p className="text-slate-400 font-bold text-xs uppercase tracking-[0.2em] text-center md:text-left">
+              Ingeniería de Sistemas • Auditoría de Software • 2026
+            </p>
           </div>
-          <p className="text-slate-400 font-bold text-xs uppercase tracking-widest text-center">
-            © 2026 Lisandro • Ingeniería de Sistemas • La Paz, Bolivia
-          </p>
-          <div className="flex gap-4">
-            <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse" />
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Servidor Activo</span>
+          <div className="flex flex-col items-center md:items-end gap-2">
+            <div className="flex gap-2">
+              <div className="h-2 w-2 bg-blue-500 rounded-full animate-pulse" />
+              <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Servidor La Paz / Bolivia</span>
+            </div>
+            <p className="text-slate-300 text-[10px] font-medium uppercase tracking-widest">© Lisandro - Escuela Militar de Ingeniería</p>
           </div>
         </div>
       </footer>
 
-      {/* CHATBOT INTELIGENTE FLOTANTE */}
+      {/* COMPONENTE DE IA FLOTANTE */}
       <Chatbot />
     </div>
   );
