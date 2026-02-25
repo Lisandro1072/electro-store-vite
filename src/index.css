@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+@theme {
+  --color-electric-blue: #004aad;
+  --color-tech-gray: #1a1a1a;
+  --color-voltage-yellow: #ffde59;
+}
